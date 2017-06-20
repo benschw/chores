@@ -12,6 +12,6 @@ test:
 
 build: 
 	mkdir -p build
-	go build -o build/todo
+	go build -o build/chores
 
 .PHONY: build

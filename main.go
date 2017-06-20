@@ -22,10 +22,10 @@ func main() {
 		}
 	}
 
-	conStr := "admin:changeme@tcp(localhost:3306)/Todo?charset=utf8&parseTime=True"
+	conStr := "admin:changeme@tcp(localhost:3306)/Chores?charset=utf8&parseTime=True"
 
 	log.Print("constructing service")
-	svc, err := todo.NewTodoService(*bind, conStr)
+	svc, err := todo.NewService(*bind, conStr)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)

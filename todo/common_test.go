@@ -12,9 +12,33 @@ import (
 
 func Test(t *testing.T) { TestingT(t) }
 
-func GetClientAndService() (*TodoClient, *TodoService) {
+var _ = Suite(&TestSuite{})
 
-	dbStr := "admin:changeme@tcp(172.20.20.1:3306)/Todo?charset=utf8&parseTime=True"
+type TestSuite struct {
+	svc    *TodoService
+	tasks  *TaskClient
+	chores *ChoreClient
+}
+
+func (s *TestSuite) SetUpSuite(c *C) {
+	s.chores, s.tasks, s.svc = GetClientAndService()
+
+	go s.svc.Run()
+}
+func (s *TestSuite) TearDownSuite(c *C) {
+	s.svc.Stop()
+}
+func (s *TestSuite) SetUpTest(c *C) {
+	s.svc.Migrate()
+}
+func (s *TestSuite) TearDownTest(c *C) {
+	s.svc.Db.DropTable(Chore{})
+	s.svc.Db.DropTable(Task{})
+}
+
+func GetClientAndService() (*ChoreClient, *TaskClient, *TodoService) {
+
+	dbStr := "admin:changeme@tcp(172.20.20.1:3306)/Chores?charset=utf8&parseTime=True"
 	db, err := gorm.Open("mysql", dbStr)
 	if err != nil {
 		panic(err)
@@ -29,8 +53,11 @@ func GetClientAndService() (*TodoClient, *TodoService) {
 		Db:     db,
 	}
 
-	client := &TodoClient{
+	chores := &ChoreClient{
 		Addr: fmt.Sprintf("http://localhost:%d", port),
 	}
-	return client, svc
+	tasks := &TaskClient{
+		Addr: fmt.Sprintf("http://localhost:%d", port),
+	}
+	return chores, tasks, svc
 }
