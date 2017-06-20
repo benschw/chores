@@ -28,11 +28,7 @@ func (s *TestSuite) SetUpTest(c *C) {
 	s.svc.Migrate()
 }
 func (s *TestSuite) TearDownTest(c *C) {
-	db, err := s.svc.Db.Get()
-	if err != nil {
-		panic(err)
-	}
-	db.DropTable(Todo{})
+	s.svc.Db.DropTable(Todo{})
 }
 
 func (s *TestSuite) TestHealth(c *C) {

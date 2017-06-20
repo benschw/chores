@@ -5,16 +5,16 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 
 	"github.com/benschw/opin-go/ophttp"
-	"github.com/benschw/opin-go/vault"
 	"github.com/gorilla/mux"
 )
 
-func NewTodoService(bind string) (*TodoService, error) {
+func NewTodoService(bind string, conStr string) (*TodoService, error) {
 	server := ophttp.NewServer(bind)
 
-	db, err := vault.NewDbProvider("Todo", "mysql.service.consul")
+	db, err := gorm.Open("mysql", conStr)
 	if err != nil {
 		return nil, err
 	}
@@ -26,17 +26,12 @@ func NewTodoService(bind string) (*TodoService, error) {
 
 type TodoService struct {
 	Server *ophttp.Server
-	Db     vault.DbProvider
+	Db     *gorm.DB
 }
 
 // Migrate
-func (s *TodoService) Migrate() error {
-	db, err := s.Db.Get()
-	if err == nil {
-		db.AutoMigrate(&Todo{})
-	}
-
-	return err
+func (s *TodoService) Migrate() {
+	s.Db.AutoMigrate(&Todo{})
 }
 
 // Configure and start http server
@@ -55,10 +50,11 @@ func (s *TodoService) Run() error {
 	r.HandleFunc("/todo/{id}", resource.Update).Methods("PUT")
 	r.HandleFunc("/todo/{id}", resource.Delete).Methods("DELETE")
 
-	http.Handle("/", r)
+	mux := http.NewServeMux()
+	mux.Handle("/", r)
 
 	// Start Server
-	err := s.Server.Start()
+	err := s.Server.Start(mux)
 
 	log.Println("Server Stopped")
 	return err

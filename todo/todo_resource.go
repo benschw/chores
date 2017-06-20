@@ -6,27 +6,20 @@ import (
 	"net/http"
 
 	"github.com/benschw/opin-go/rest"
-	"github.com/benschw/opin-go/vault"
+	"github.com/jinzhu/gorm"
 )
 
 type TodoResource struct {
-	Db vault.DbProvider
+	Db *gorm.DB
 }
 
 func (r *TodoResource) Health(res http.ResponseWriter, req *http.Request) {
 	//2xx => pass, 429 => warn, anything else => critical
 
-	// if we can't get a db connection, set health to Critical
-	db, err := r.Db.Get()
-	if err != nil {
-		rest.SetInternalServerErrorResponse(res, err)
-		return
-	}
-
 	var todos []Todo
-	assoc := db.Find(&todos)
+	assoc := r.Db.Find(&todos)
 	if assoc.Error != nil {
-		rest.SetInternalServerErrorResponse(res, err)
+		rest.SetInternalServerErrorResponse(res, nil)
 		return
 	}
 	// set health to OK
@@ -39,19 +32,13 @@ func (r *TodoResource) Health(res http.ResponseWriter, req *http.Request) {
 func (r *TodoResource) Add(res http.ResponseWriter, req *http.Request) {
 	var todo Todo
 
-	db, err := r.Db.Get()
-	if err != nil {
-		rest.SetInternalServerErrorResponse(res, err)
-		return
-	}
-
 	if err := rest.Bind(req, &todo); err != nil {
 		log.Print(err)
 		rest.SetBadRequestResponse(res)
 		return
 	}
 
-	db.Create(&todo)
+	r.Db.Create(&todo)
 
 	if err := rest.SetCreatedResponse(res, todo, fmt.Sprintf("todo/%d", todo.Id)); err != nil {
 		rest.SetInternalServerErrorResponse(res, err)
@@ -67,12 +54,7 @@ func (r *TodoResource) Get(res http.ResponseWriter, req *http.Request) {
 	}
 	var todo Todo
 
-	db, err := r.Db.Get()
-	if err != nil {
-		rest.SetInternalServerErrorResponse(res, err)
-		return
-	}
-	if db.First(&todo, id).RecordNotFound() {
+	if r.Db.First(&todo, id).RecordNotFound() {
 		rest.SetNotFoundResponse(res)
 		return
 	}
@@ -86,12 +68,7 @@ func (r *TodoResource) Get(res http.ResponseWriter, req *http.Request) {
 func (r *TodoResource) GetAll(res http.ResponseWriter, req *http.Request) {
 	var todos []Todo
 
-	db, err := r.Db.Get()
-	if err != nil {
-		rest.SetInternalServerErrorResponse(res, err)
-		return
-	}
-	db.Find(&todos)
+	r.Db.Find(&todos)
 
 	if err := rest.SetOKResponse(res, todos); err != nil {
 		rest.SetInternalServerErrorResponse(res, err)
@@ -113,17 +90,12 @@ func (r *TodoResource) Update(res http.ResponseWriter, req *http.Request) {
 	todo.Id = id
 
 	var found Todo
-	db, err := r.Db.Get()
-	if err != nil {
-		rest.SetInternalServerErrorResponse(res, err)
-		return
-	}
-	if db.First(&found, id).RecordNotFound() {
+	if r.Db.First(&found, id).RecordNotFound() {
 		rest.SetNotFoundResponse(res)
 		return
 	}
 
-	db.Save(&todo)
+	r.Db.Save(&todo)
 
 	if err := rest.SetOKResponse(res, todo); err != nil {
 		rest.SetInternalServerErrorResponse(res, err)
@@ -139,17 +111,12 @@ func (r *TodoResource) Delete(res http.ResponseWriter, req *http.Request) {
 	}
 	var todo Todo
 
-	db, err := r.Db.Get()
-	if err != nil {
-		rest.SetInternalServerErrorResponse(res, err)
-		return
-	}
-	if db.First(&todo, id).RecordNotFound() {
+	if r.Db.First(&todo, id).RecordNotFound() {
 		rest.SetNotFoundResponse(res)
 		return
 	}
 
-	db.Delete(&todo)
+	r.Db.Delete(&todo)
 
 	if err := rest.SetNoContentResponse(res); err != nil {
 		rest.SetInternalServerErrorResponse(res, err)

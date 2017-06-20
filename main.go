@@ -6,7 +6,7 @@ import (
 	"log/syslog"
 	"os"
 
-	"github.com/benschw/vault-todo/todo"
+	"github.com/benschw/chores/todo"
 )
 
 func main() {
@@ -22,19 +22,17 @@ func main() {
 		}
 	}
 
+	conStr := "admin:changeme@tcp(localhost:3306)/Todo?charset=utf8&parseTime=True"
+
 	log.Print("constructing service")
-	svc, err := todo.NewTodoService(*bind)
+	svc, err := todo.NewTodoService(*bind, conStr)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	log.Print("migrating")
-
-	if err = svc.Migrate(); err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
+	svc.Migrate()
 
 	log.Print("running service")
 	if err := svc.Run(); err != nil {
