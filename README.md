@@ -1,7 +1,7 @@
-[![Build Status](https://drone.io/github.com/benschw/vault-todo/status.png)](https://drone.io/github.com/benschw/vault-todo/latest)
 
-[download latest](https://drone.io/github.com/benschw/vault-todo/files/build/todo)
+# Chores web server
 
+REST api to manage chores which recur at different intervals
 
 ## build
 
