@@ -1,6 +1,8 @@
 package todo
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -9,12 +11,24 @@ type TaskRepo struct {
 	Db        *gorm.DB
 }
 
-func (r *TaskRepo) ToggleStatus(id int) error {
+func (r *TaskRepo) LogWork(task Task) (Task, error) {
+	r.Db.Create(&task)
+	return task, nil
+}
+func (r *TaskRepo) DeleteWork(id int) error {
+	var task Task
+
+	if r.Db.First(&task, id).RecordNotFound() {
+		return fmt.Errorf("task not found")
+	}
+	r.Db.Delete(&task)
 	return nil
 }
 
-func (r *TaskRepo) FindAll(choreType string) ([]Task, error) {
-	var tasks []Task
+func (r *TaskRepo) FindAll(choreType string) ([]Chore, error) {
+	var chores []Chore
 
-	return tasks, nil
+	r.Db.Preload("Tasks").Where("type = ?", choreType).Find(&chores)
+
+	return chores, nil
 }

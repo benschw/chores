@@ -1,5 +1,9 @@
 package todo
 
+import (
+	"time"
+)
+
 const (
 	TYPE_DAILY   = "daily"
 	TYPE_WEEKLY  = "weekly"
@@ -11,10 +15,11 @@ type Chore struct {
 	Id      int    `json:"id"`
 	Type    string `json:"type"`
 	Content string `json:"content"`
+	Tasks   []Task `gorm:"ForeignKey:ChoreId"`
 }
 
 type Task struct {
-	Chore      Chore `json:"chore"`
-	IsComplete bool  `json:"is-complete"`
-	Overdue    int   `json:"overdue"`
+	Id      int       `json:"id"`
+	ChoreId int       `json:"chore-id"`
+	Time    time.Time `json:"time"`
 }

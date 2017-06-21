@@ -14,4 +14,7 @@ build:
 	mkdir -p build
 	go build -o build/chores
 
+db:
+	mysql -u admin -pchangeme -h 172.20.20.1 -e 'CREATE DATABASE Chores'
+
 .PHONY: build

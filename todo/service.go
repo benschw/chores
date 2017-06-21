@@ -53,7 +53,9 @@ func (s *TodoService) Run() error {
 	r.HandleFunc("/chore", chores.GetAll).Methods("GET")
 	r.HandleFunc("/chore/{id}", chores.Delete).Methods("DELETE")
 
-	r.HandleFunc("/task/toggle-status/{id}", tasks.ToggleStatus).Methods("POST")
+	r.HandleFunc("/work/", tasks.LogWork).Methods("POST")
+	r.HandleFunc("/work/{id}", tasks.DeleteWork).Methods("DELETE")
+
 	r.HandleFunc("/task/daily", tasks.GetAllDaily).Methods("GET")
 	r.HandleFunc("/task/weekly", tasks.GetAllWeekly).Methods("GET")
 	r.HandleFunc("/task/monthly", tasks.GetAllMonthly).Methods("GET")
