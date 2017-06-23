@@ -3,11 +3,13 @@ package todo
 import (
 	"log"
 	"net/http"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 
 	"github.com/benschw/opin-go/ophttp"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -34,6 +36,8 @@ func (s *TodoService) Migrate() {
 	s.Db.AutoMigrate(&Chore{})
 	s.Db.AutoMigrate(&Task{})
 }
+func (r *TodoService) Health(res http.ResponseWriter, req *http.Request) {
+}
 
 // Configure and start http server
 func (s *TodoService) Run() error {
@@ -48,21 +52,22 @@ func (s *TodoService) Run() error {
 
 	// Wire Routes
 	r := mux.NewRouter()
+	r.HandleFunc("/", s.Health).Methods("POST")
 
-	r.HandleFunc("/chore", chores.Add).Methods("POST")
-	r.HandleFunc("/chore", chores.GetAll).Methods("GET")
-	r.HandleFunc("/chore/{id}", chores.Delete).Methods("DELETE")
+	r.HandleFunc("/api/chore", chores.Add).Methods("POST")
+	r.HandleFunc("/api/chore", chores.GetAll).Methods("GET")
+	r.HandleFunc("/api/chore/{id}", chores.Delete).Methods("DELETE")
 
-	r.HandleFunc("/work/", tasks.LogWork).Methods("POST")
-	r.HandleFunc("/work/{id}", tasks.DeleteWork).Methods("DELETE")
+	r.HandleFunc("/api/work/", tasks.LogWork).Methods("POST")
+	r.HandleFunc("/api/work/{id}", tasks.DeleteWork).Methods("DELETE")
 
-	r.HandleFunc("/task/daily", tasks.GetAllDaily).Methods("GET")
-	r.HandleFunc("/task/weekly", tasks.GetAllWeekly).Methods("GET")
-	r.HandleFunc("/task/monthly", tasks.GetAllMonthly).Methods("GET")
-	r.HandleFunc("/task/yearly", tasks.GetAllYearly).Methods("GET")
+	r.HandleFunc("/api/task/daily", tasks.GetAllDaily).Methods("GET")
+	r.HandleFunc("/api/task/weekly", tasks.GetAllWeekly).Methods("GET")
+	r.HandleFunc("/api/task/monthly", tasks.GetAllMonthly).Methods("GET")
+	r.HandleFunc("/api/task/yearly", tasks.GetAllYearly).Methods("GET")
 
 	mux := http.NewServeMux()
-	mux.Handle("/", r)
+	mux.Handle("/", handlers.LoggingHandler(os.Stdout, handlers.CORS()(r)))
 
 	// Start Server
 	err := s.Server.Start(mux)

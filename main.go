@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"log/syslog"
 	"os"
 
 	"github.com/benschw/chores/todo"
@@ -11,21 +10,17 @@ import (
 
 func main() {
 
-	bind := flag.String("bind", "0.0.0.0:8080", "address to bind http server to")
-	useSyslog := flag.Bool("syslog", false, "log to syslog")
+	bind := flag.String("bind", "0.0.0.0:80", "address to bind http server to")
+	conStr := flag.String("mysql", "admin:changeme@tcp(localhost:3306)/Chores?charset=utf8&parseTime=True", "db connection string")
 	flag.Parse()
 
-	if *useSyslog {
-		logwriter, err := syslog.New(syslog.LOG_NOTICE, "todo")
-		if err == nil {
-			log.SetOutput(logwriter)
-		}
+	db, found := os.LookupEnv("MYSQL_CONNECTION_STRING")
+	if found {
+		conStr = &db
 	}
 
-	conStr := "admin:changeme@tcp(localhost:3306)/Chores?charset=utf8&parseTime=True"
-
 	log.Print("constructing service")
-	svc, err := todo.NewService(*bind, conStr)
+	svc, err := todo.NewService(*bind, *conStr)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
