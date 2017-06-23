@@ -1,0 +1,23 @@
+sudo: false
+language: go
+go:
+  - 1.8
+  - tip
+
+services:
+  - mysql
+
+env:
+  - PATH=/home/travis/gopath/bin:$PATH
+
+before_install:
+  - go get -u -t -v ./...
+  - go get github.com/golang/lint/golint
+  - go get github.com/mitchellh/gox
+  - mysql -e 'CREATE DATABASE Chores;'
+
+script:
+  - go vet $(go list ./... | grep -v vendor)
+  - go test $(go list ./... | grep -v '/vendor/')
+  - gox -ldflags "-X main.Version=$TRAVIS_BUILD_NUMBER" -output "chores_{{.OS}}_{{.Arch}}" -osarch="linux/amd64"
+
