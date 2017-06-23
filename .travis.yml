@@ -10,7 +10,7 @@ env:
   global:
     - PATH=/home/travis/gopath/bin:$PATH
     - secure: cHU+9fjOOdeb3dE7X/EhcsGfzQ+Uxi+Gl03jAZTZqHCVB94mlgmPaOQb6GimOdZwSstbBTkfpcqToF7k631Y55G+fElO0iuvgW2ivkblO5G5M4UBzP+eJ/bnnYZsWlBz91nPskv863DJ2ou5wMeVeYzbtk+Ri5bG+N2tgRocguHyC8XYPJhWq6J8mq+JeXGoLIrUkeZVBPLzW/ED6eJBmidMG6R7ozMwfoyi5uvOruUUTmVIY7SjWKROgn/F9EKhnrV8oZxP8sQqG+5BANKFcHc74ubK1FNJj3MJyL8NmZAseJxdpy5XUD5gQLlRuHQIsAsr+diJSgPqVrB8Iv0ig82qg/6TgUY5keRpP1W9HU2kNFpCBPUdZRH1no6eGBJD/jOLHLC6L+tuTfZGBbJaTT9qRHGaPJetJeqjKXOOK0W4br9uQ0XNRSJs7IHTzrLUaia67QaAF0D5h0arYdtBvqnHwg0MyA574jV7MhvX6APqSIw9nj+i0aa/5W8G8sQRT+CsOU6TtNYJWVSQPO7NE38beyf/tamfywLVzvb8lwHxThibxoTNYQ1i7N3kyqFewLOWxuUkLPN3LsE5Qv+ZIDM1VP6DVlkiDogx5CTnF0NRvlY6vrTBGe04ufPpkRHb4F3KsMoGx0r+bUs/LBjQOGT0aviNc8PcgyAvwSpOYcs=
-    - COMMIT=${TRAVIS_COMMIT::8
+    - COMMIT=${TRAVIS_COMMIT::8}
 
 before_install:
   - go get -u -t -v ./...
