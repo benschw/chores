@@ -1,9 +1,9 @@
-FROM benschw/litefs
+FROM ubuntu:16.04
 
-ADD app /opt/app
+ADD chores /opt/chores
 
 EXPOSE 8080
 
-ENTRYPOINT ["/opt/app"]
+ENTRYPOINT ["/opt/chores"]
 
 
