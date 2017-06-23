@@ -22,6 +22,7 @@ script:
   - go vet $(go list ./... | grep -v vendor)
   - go test $(go list ./... | grep -v '/vendor/')
   - gox -ldflags "-X main.Version=$TRAVIS_BUILD_NUMBER" -output "chores_{{.OS}}_{{.Arch}}" -osarch="linux/amd64"
+  - go build
 
 after_success:
   - docker login -u benschw -p $DOCKER_PASS
