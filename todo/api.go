@@ -12,10 +12,11 @@ const (
 )
 
 type Chore struct {
-	Id      int    `json:"id"`
-	Type    string `json:"type"`
-	Content string `json:"content"`
-	Tasks   []Task `json:"tasks" gorm:"ForeignKey:ChoreId"`
+	Id      int       `json:"id"`
+	Type    string    `json:"type"`
+	Content string    `json:"content"`
+	Created time.Time `json:"created"`
+	Tasks   []Task    `json:"tasks" gorm:"ForeignKey:ChoreId"`
 }
 
 type Task struct {

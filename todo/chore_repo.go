@@ -2,6 +2,7 @@ package todo
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -11,7 +12,7 @@ type ChoreRepo struct {
 }
 
 func (r *ChoreRepo) Insert(chore Chore) (Chore, error) {
-
+	chore.Created = time.Now()
 	r.Db.Create(&chore)
 
 	return chore, nil
