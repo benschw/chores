@@ -49,24 +49,8 @@ func (r *TaskResource) DeleteWork(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
-func (r *TaskResource) GetAllDaily(res http.ResponseWriter, req *http.Request) {
-	r.getAllByType(res, req, TYPE_DAILY)
-}
-
-func (r *TaskResource) GetAllWeekly(res http.ResponseWriter, req *http.Request) {
-	r.getAllByType(res, req, TYPE_WEEKLY)
-}
-
-func (r *TaskResource) GetAllMonthly(res http.ResponseWriter, req *http.Request) {
-	r.getAllByType(res, req, TYPE_MONTHLY)
-}
-
-func (r *TaskResource) GetAllYearly(res http.ResponseWriter, req *http.Request) {
-	r.getAllByType(res, req, TYPE_YEARLY)
-}
-
-func (r *TaskResource) getAllByType(res http.ResponseWriter, req *http.Request, choreType string) {
-	tasks, err := r.Repo.FindAll(choreType)
+func (r *TaskResource) GetAll(res http.ResponseWriter, req *http.Request) {
+	tasks, err := r.Repo.FindAll()
 	if err != nil {
 		rest.SetInternalServerErrorResponse(res, err)
 		return

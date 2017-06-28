@@ -61,10 +61,7 @@ func (s *TodoService) Run() error {
 	r.HandleFunc("/api/work", tasks.LogWork).Methods("POST")
 	r.HandleFunc("/api/work/{id}", tasks.DeleteWork).Methods("DELETE")
 
-	r.HandleFunc("/api/task/daily", tasks.GetAllDaily).Methods("GET")
-	r.HandleFunc("/api/task/weekly", tasks.GetAllWeekly).Methods("GET")
-	r.HandleFunc("/api/task/monthly", tasks.GetAllMonthly).Methods("GET")
-	r.HandleFunc("/api/task/yearly", tasks.GetAllYearly).Methods("GET")
+	r.HandleFunc("/api/task", tasks.GetAll).Methods("GET")
 
 	mux := http.NewServeMux()
 	mux.Handle("/", handlers.LoggingHandler(os.Stdout, handlers.CORS()(r)))

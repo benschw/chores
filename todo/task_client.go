@@ -39,23 +39,10 @@ func (c *TaskClient) DeleteWork(id int) error {
 	return rest.ProcessResponseEntity(r, nil, http.StatusNoContent)
 }
 
-func (c *TaskClient) FindAllDaily() ([]*Chore, error) {
-	return c.findAllByType(TYPE_DAILY)
-}
-func (c *TaskClient) FindAllWeekly() ([]*Chore, error) {
-	return c.findAllByType(TYPE_WEEKLY)
-}
-func (c *TaskClient) FindAllMonthly() ([]*Chore, error) {
-	return c.findAllByType(TYPE_MONTHLY)
-}
-func (c *TaskClient) FindAllYearly() ([]*Chore, error) {
-	return c.findAllByType(TYPE_YEARLY)
-}
-
-func (c *TaskClient) findAllByType(choreType string) ([]*Chore, error) {
+func (c *TaskClient) FindAll() ([]*Chore, error) {
 	var chores []*Chore
 
-	r, err := rest.MakeRequest("GET", fmt.Sprintf("%s/api/task/%s", c.Addr, choreType), nil)
+	r, err := rest.MakeRequest("GET", fmt.Sprintf("%s/api/task", c.Addr), nil)
 	if err != nil {
 		return chores, err
 	}

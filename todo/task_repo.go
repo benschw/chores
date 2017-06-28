@@ -25,10 +25,10 @@ func (r *TaskRepo) DeleteWork(id int) error {
 	return nil
 }
 
-func (r *TaskRepo) FindAll(choreType string) ([]Chore, error) {
+func (r *TaskRepo) FindAll() ([]Chore, error) {
 	var chores []Chore
 
-	r.Db.Preload("Tasks").Where("type = ?", choreType).Find(&chores)
+	r.Db.Preload("Tasks").Find(&chores)
 
 	return chores, nil
 }
