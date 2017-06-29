@@ -32,7 +32,31 @@ func (r *ChoreResource) Add(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
+func (r *ChoreResource) Save(res http.ResponseWriter, req *http.Request) {
+	var chore Chore
 
+	id, err := rest.PathInt(req, "id")
+	if err != nil {
+		rest.SetBadRequestResponse(res)
+		return
+	}
+	if err := rest.Bind(req, &chore); err != nil {
+		rest.SetBadRequestResponse(res)
+		return
+	}
+	chore.Id = id
+
+	if _, err = r.Repo.Find(id); err != nil {
+		rest.SetNotFoundResponse(res)
+		return
+	}
+	r.Repo.Update(chore)
+
+	if err := rest.SetOKResponse(res, chore); err != nil {
+		rest.SetInternalServerErrorResponse(res, err)
+		return
+	}
+}
 func (r *ChoreResource) GetAll(res http.ResponseWriter, req *http.Request) {
 	chores, err := r.Repo.FindAll()
 	if err != nil {

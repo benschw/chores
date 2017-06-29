@@ -19,6 +19,22 @@ func (s *TestSuite) TestAddChore(c *C) {
 	c.Assert(created, DeepEquals, expected)
 	c.Assert(found[0], DeepEquals, expected)
 }
+func (s *TestSuite) TestUpdateChore(c *C) {
+	// given
+	a, err := s.chores.Add("hello world", TYPE_DAILY)
+
+	// when
+	a.Content = "hello galaxy"
+	b, err := s.chores.Save(a)
+
+	// then
+	c.Assert(err, Equals, nil)
+
+	found, _ := s.chores.FindAll()
+
+	c.Assert(found[0].Content, Equals, "hello galaxy")
+	c.Assert(b.Content, Equals, "hello galaxy")
+}
 
 func (s *TestSuite) TestFindAllChores(c *C) {
 	// given

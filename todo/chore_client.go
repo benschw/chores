@@ -31,6 +31,17 @@ func (c *ChoreClient) Add(content string, choreType string) (*Chore, error) {
 	return created, err
 }
 
+func (c *ChoreClient) Save(chore *Chore) (*Chore, error) {
+	var created *Chore
+
+	r, err := rest.MakeRequest("PUT", fmt.Sprintf("%s/api/chore/%d", c.Addr, chore.Id), chore)
+	if err != nil {
+		return created, err
+	}
+	err = rest.ProcessResponseEntity(r, &created, http.StatusCreated)
+	return created, err
+}
+
 func (c *ChoreClient) FindAll() ([]*Chore, error) {
 	var chores []*Chore
 

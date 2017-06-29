@@ -55,6 +55,7 @@ func (s *TodoService) Run() error {
 	r.HandleFunc("/", s.Health).Methods("POST")
 
 	r.HandleFunc("/api/chore", chores.Add).Methods("POST")
+	r.HandleFunc("/api/chore/{id}", chores.Save).Methods("PUT")
 	r.HandleFunc("/api/chore", chores.GetAll).Methods("GET")
 	r.HandleFunc("/api/chore/{id}", chores.Delete).Methods("DELETE")
 

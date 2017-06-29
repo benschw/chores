@@ -18,6 +18,21 @@ func (r *ChoreRepo) Insert(chore Chore) (Chore, error) {
 	return chore, nil
 }
 
+func (r *ChoreRepo) Update(chore Chore) (Chore, error) {
+	chore.Created = time.Now()
+	r.Db.Save(&chore)
+
+	return chore, nil
+}
+func (r *ChoreRepo) Find(id int) (Chore, error) {
+	var chore Chore
+
+	if r.Db.First(&chore, id).RecordNotFound() {
+		return chore, fmt.Errorf("Not Found")
+	}
+	return chore, nil
+}
+
 func (r *ChoreRepo) FindAll() ([]Chore, error) {
 	var chores []Chore
 
