@@ -38,13 +38,13 @@ func (s *TestSuite) TearDownTest(c *C) {
 
 func GetClientAndService() (*ChoreClient, *TaskClient, *TodoService) {
 	//travis
-	//	dbStr := "root:@tcp(127.0.0.1:3306)/Chores?charset=utf8&parseTime=True"
+	dbStr := "root:@tcp(127.0.0.1:3306)/Chores?charset=utf8&parseTime=True"
 
 	//linux
 	//dbStr := "admin:changeme@tcp(172.17.0.1:3306)/Chores?charset=utf8&parseTime=True"
 
 	//mac
-	dbStr := "admin:changeme@tcp(172.20.20.1:3306)/Chores?charset=utf8&parseTime=True"
+	//dbStr := "admin:changeme@tcp(172.20.20.1:3306)/Chores?charset=utf8&parseTime=True"
 	db, err := gorm.Open("mysql", dbStr)
 	if err != nil {
 		panic(err)
