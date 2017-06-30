@@ -28,7 +28,9 @@ func (r *TaskRepo) DeleteWork(id int) error {
 func (r *TaskRepo) FindAll() ([]Chore, error) {
 	var chores []Chore
 
-	r.Db.Preload("Tasks").Find(&chores)
+	r.Db.Preload("Tasks", func(db *gorm.DB) *gorm.DB {
+		return db.Order("tasks.time DESC")
+	}).Find(&chores).Order("chores.created ASC")
 
 	return chores, nil
 }

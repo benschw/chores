@@ -24,7 +24,7 @@ func (c *TaskClient) LogWork(choreId int, t time.Time) (*Task, error) {
 	task := &Task{ChoreId: choreId, Time: t}
 	var created *Task
 
-	r, err := rest.MakeRequest("POST", fmt.Sprintf("%s/api/work/", c.Addr), task)
+	r, err := rest.MakeRequest("POST", fmt.Sprintf("%s/api/work", c.Addr), task)
 	if err != nil {
 		return created, err
 	}

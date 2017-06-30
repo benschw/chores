@@ -5,8 +5,6 @@ import (
 )
 
 func (s *TestSuite) TestAddChore(c *C) {
-	// given
-	expected := &Chore{Id: 1, Content: "hello world", Type: TYPE_DAILY}
 
 	// when
 	created, err := s.chores.Add("hello world", TYPE_DAILY)
@@ -16,8 +14,8 @@ func (s *TestSuite) TestAddChore(c *C) {
 
 	found, _ := s.chores.FindAll()
 
-	c.Assert(created, DeepEquals, expected)
-	c.Assert(found[0], DeepEquals, expected)
+	c.Assert(created.Content, Equals, "hello world")
+	c.Assert(found[0].Content, DeepEquals, "hello world")
 }
 func (s *TestSuite) TestUpdateChore(c *C) {
 	// given
